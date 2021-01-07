@@ -7,12 +7,13 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
-var score = 0;
+
 var gameState = "onSling";
+var bg = "sprites/bg1.png";
+var score = 0;
 
 function preload() {
-
-    getTime();
+    getBackgroundImg();
 }
 
 function setup(){
@@ -45,24 +46,28 @@ function setup(){
     slingshot = new SlingShot(bird.body,{x:200, y:50});
 }
 
-function draw() {
-    if (backgroundImg) {
-        
-    
+function draw(){
+    if(backgroundImg)
         background(backgroundImg);
-    }
-    text(score , 100,100)
+    
+        noStroke();
+        textSize(35)
+        fill("white")
+        text("Score  " + score, width-300, 50)
+    
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.score();
     log3.display();
 
     box5.display();
@@ -72,20 +77,13 @@ function draw() {
     bird.display();
     platform.display();
     //log6.display();
-    slingshot.display();  
-    
-    
-    pig1.score()
-    pig3.score()
-
-
-
+    slingshot.display();    
 }
 
 function mouseDragged(){
-    if (gameState!=="launched"){
+    //if (gameState!=="launched"){
         Matter.Body.setPosition(bird.body, {x: mouseX , y: mouseY});
-    }
+    //}
 }
 
 
@@ -96,33 +94,25 @@ function mouseReleased(){
 
 function keyPressed(){
     if(keyCode === 32){
-       // slingshot.attach(bird.body);
+        slingshot.attach(bird.body);
+        bird.trajectory= []
+
+        Matter.Body.setPosition(bird.body , {x: 200 ,y: 50})
     }
 }
 
-async function getTime() {
+async function getBackgroundImg(){
+    var date = new Date();
+    var hour = date.getHours();
     
     
-    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Tokyo")
+    if(hour>=0600 && hour<=1900){
+        bg = "sprites/bg1.png";
+    }
+    else{
+        bg = "sprites/bg2.jpg";
+    }
 
-    var responseJSON = await response.json() 
-
-
-    var date =  new Date()
-
-    //console.log(date)
-
-    var dateTime = responseJSON.datetime.slice(11, 13) 
-    
-
-    if (dateTime >= 6 && dateTime <= 19) {
-        bg = "sprites/bg2.jpg"
-    } else {
-        bg = "sprites/bg.png"
-    } 
-
-    console.log(bg)
-
-    backgroundImg = loadImage(bg)
+    backgroundImg = loadImage(bg);
+    console.log(backgroundImg);
 }
-
