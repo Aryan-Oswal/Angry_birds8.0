@@ -101,7 +101,7 @@ function keyPressed(){
     }
 }
 
-async function getBackgroundImg(){
+ function getBackgroundImg(){
     var date = new Date();
     var hour = date.getHours();
     
